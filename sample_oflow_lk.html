@@ -172,9 +172,9 @@
                     prev_img_pyr = curr_img_pyr;
                     curr_img_pyr = _pyr;
 
-                    stat.start("grayscale");
-                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, curr_img_pyr.data[0]);
-                    stat.stop("grayscale");
+                    //stat.start("grayscale");
+                    //jsfeat.imgproc.grayscale(imageData.data, 640, 480, curr_img_pyr.data[0]);
+                    //stat.stop("grayscale");
 
                     stat.start("build image pyramid");
                     curr_img_pyr.build(curr_img_pyr.data[0], true);
