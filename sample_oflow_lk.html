@@ -141,32 +141,28 @@
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
                     ctx.drawImage(video, 0, 0, 640, 480);
                     var imageData = ctx.getImageData(0, 0, 640, 480);
-                    
-                    //
+
+                    // swap flow data
+                    var _pt_xy = prev_xy;
+                    prev_xy = curr_xy;
+                    curr_xy = _pt_xy;
+                    var _pyr = prev_img_pyr;
+                    prev_img_pyr = curr_img_pyr;
+                    curr_img_pyr = _pyr;
+
                     stat.start("grayscale");
-                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
+                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, curr_img_pyr.data[0]);
                     stat.stop("grayscale");
 
-                    if(threshold != options.threshold) {
-                        threshold = options.threshold|0;
-                        jsfeat.fast_corners.set_threshold(threshold);
-                    }
-                    
-                    stat.start("fast corners");
-                    var count = jsfeat.fast_corners.detect(img_u8, corners, 5);
-                    stat.stop("fast corners");
+                    stat.start("build image pyramid");
+                    curr_img_pyr.build(curr_img_pyr.data[0], true);
+                    stat.stop("build image pyramid");
 
-                    // render result back to canvas
-                    var data_u32 = new Uint32Array(imageData.data.buffer);
-                    render_corners(corners, count, data_u32, 640);
+                    stat.start("optical flow lk");
+                    jsfeat.optical_flow_lk.track(prev_img_pyr, curr_img_pyr, prev_xy, curr_xy, point_count, options.win_size|0, options.max_iterations|0, point_status, options.epsilon, options.min_eigen);
+                    stat.stop("optical flow lk");
 
-                    ctx.putImageData(imageData, 0, 0);
-                    //
-                    
-
-
-                    
-                   
+                    prune_oflow_points(ctx);
 
                     $('#log').html(stat.log() + '<br/>click to add tracking points: ' + point_count);
                 }
