@@ -102,10 +102,6 @@
                 this.max_iterations = 30;
                 this.epsilon = 0.01;
                 this.min_eigen = 0.001;
-                
-                this.blur_radius = 2;
-                this.low_threshold = 20;
-                this.high_threshold = 50;
             }
 
             function demo_app(videoWidth, videoHeight) {
@@ -115,9 +111,6 @@
 
                 ctx.fillStyle = "rgb(0,255,0)";
                 ctx.strokeStyle = "rgb(0,255,0)";
-                
-                //
-                img_u8 = new jsfeat.matrix_t(640, 480, jsfeat.U8C1_t);
 
                 curr_img_pyr = new jsfeat.pyramid_t(3);
                 prev_img_pyr = new jsfeat.pyramid_t(3);
@@ -136,13 +129,6 @@
                 gui.add(options, 'max_iterations', 3, 30).step(1);
                 gui.add(options, 'epsilon', 0.001, 0.1).step(0.0025);
                 gui.add(options, 'min_eigen', 0.001, 0.01).step(0.0025);
-                
-                gui.add(options, 'blur_radius', 0, 4).step(1);
-                gui.add(options, 'low_threshold', 1, 127).step(1);
-                gui.add(options, 'high_threshold', 1, 127).step(1);
-
-                stat.add("gauss blur");
-                stat.add("canny edge");
 
                 stat.add("grayscale");
                 stat.add("build image pyramid");
@@ -163,36 +149,6 @@
                     var _pyr = prev_img_pyr;
                     prev_img_pyr = curr_img_pyr;
                     curr_img_pyr = _pyr;
-                    
-                    //
-                    
-                    stat.start("grayscale");
-                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
-                    stat.stop("grayscale");
-
-                    var r = options.blur_radius|0;
-                    var kernel_size = (r+1) << 1;
-
-                    stat.start("gauss blur");
-                    jsfeat.imgproc.gaussian_blur(img_u8, img_u8, kernel_size, 0);
-                    stat.stop("gauss blur");
-
-                    stat.start("canny edge");
-                    jsfeat.imgproc.canny(img_u8, img_u8, options.low_threshold|0, options.high_threshold|0);
-                    stat.stop("canny edge");
-
-                    // render result back to canvas
-                    var data_u32 = new Uint32Array(imageData.data.buffer);
-                    var alpha = (0xff << 24);
-                    var i = img_u8.cols*img_u8.rows, pix = 0;
-                    while(--i >= 0) {
-                        pix = img_u8.data[i];
-                        data_u32[i] = alpha | (pix << 16) | (pix << 8) | pix;
-                    }
-
-                    ctx.putImageData(imageData, 0, 0);
-                    
-                    //
 
                     stat.start("grayscale");
                     jsfeat.imgproc.grayscale(imageData.data, 640, 480, curr_img_pyr.data[0]);
