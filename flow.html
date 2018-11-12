@@ -146,6 +146,7 @@
                 stat.new_frame();
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
                     ctx.drawImage(video, 0, 0, 640, 480);
+                    ctx.strokeRect(20,20,150,100);
                     var imageData = ctx.getImageData(0, 0, 640, 480);
                     
                     //
