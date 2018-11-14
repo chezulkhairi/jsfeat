@@ -204,6 +204,8 @@
                     curr_xy[point_count<<1] = coords.x;
                     curr_xy[(point_count<<1)+1] = coords.y;
                     point_count++;
+                    draw(new THREE.Vector3(0,0,10),new THREE.Vector3(coords.x,coords.y,10))
+
                 }
             }
             canvas.addEventListener('click', on_canvas_click, false);
@@ -226,7 +228,6 @@
                             curr_xy[(j<<1)+1] = curr_xy[(i<<1)+1];
                         }
                         draw_circle(ctx, curr_xy[j<<1], curr_xy[(j<<1)+1]);
-                        draw(new THREE.Vector3(curr_xy[j<<1][0],curr_xy[j<<1][1],10),new THREE.Vector3(curr_xy[(j<<1)+1][0],curr_xy[(j<<1)+1][1],10))
                         ++j;
                     }
                 }
