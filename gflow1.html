@@ -233,12 +233,12 @@
                 point_count = j;
             }
             
-            function draw(p1,p2){
-                var mat = new THREE.LineBasicMaterial({color:0x888888})
+            function draw(p1,p2){       
+                var mat = new THREE.LineBasicMaterial({color:0x884488})
                 var geo = new THREE.Geometry()
-                geo.vertices.push( new THREE.Vertex(p1) )
-                geo.vertices.push( new THREE.Vertex(p2) )
-                var line = new THREE.Line(geo)
+                geo.vertices.push( p1 )
+                geo.vertices.push( p2 )
+                var line = new THREE.Line(geo,mat)
                 scene.add(line)
             return line
             }
