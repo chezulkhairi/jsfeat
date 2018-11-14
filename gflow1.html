@@ -12,6 +12,7 @@
         <link rel="stylesheet" href="https://fonts.googleapis.com/css?family=Droid+Sans:regular,bold|Inconsolata|PT+Sans:400,700">
         <link rel="stylesheet" href="css/bootstrap.css">
         <link rel="stylesheet" href="css/jsfeat.css">
+        
 
         <script type="text/javascript">
           var _gaq = _gaq || [];
@@ -37,6 +38,7 @@
         <script type="text/javascript" src="js/compatibility.js"></script>
         <script type="text/javascript" src="js/profiler.js"></script>
         <script type="text/javascript" src="js/dat.gui.min.js"></script>
+        <script src="three.js"></script>
         <script type="text/javascript">
 
         $(window).load(function() {
@@ -224,10 +226,21 @@
                             curr_xy[(j<<1)+1] = curr_xy[(i<<1)+1];
                         }
                         draw_circle(ctx, curr_xy[j<<1], curr_xy[(j<<1)+1]);
+                        draw(new THREE.Vector3(curr_xy[j<<1][0],curr_xy[j<<1][1],10),new THREE.Vector3(curr_xy[(j<<1)+1][0],curr_xy[(j<<1)+1][1],10))
                         ++j;
                     }
                 }
                 point_count = j;
+            }
+            
+            function draw(p1,p2){
+                var mat = new THREE.LineBasicMaterial({color:0x888888})
+                var geo = new THREE.Geometry()
+                geo.vertices.push( new THREE.Vertex(p1) )
+                geo.vertices.push( new THREE.Vertex(p2) )
+                var line = new THREE.Line(geo)
+                scene.add(line)
+            return line
             }
 
             function relMouseCoords(event) {
