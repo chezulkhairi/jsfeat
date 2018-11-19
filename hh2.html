@@ -258,10 +258,10 @@ $(function() {
 	renderer.render( scene, camera );
 	img.on('load', function() {
 		//if (img.attr('src').indexOf('RDsRy9V.jpg') > 0) return;
-		W = img.get(0).naturalWidth;
-		H = img.get(0).naturalHeight;
+		W = img.get(0).naturalWidth/2;
+		H = img.get(0).naturalHeight/2;
 		console.log(W, H);
-		img.css({'opacity': 1});
+		img.css({'opacity': 0.5});
 		$('#load').attr({'disabled': 'disabled'});
 		$('#download').attr({'disabled': 'disabled'});
 		setTimeout(processData, 100);
