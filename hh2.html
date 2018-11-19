@@ -422,6 +422,8 @@ function animate() {
 	//mesh.rotation.y += 0.005;
 	mesh.rotation.y = (new Date()).getTime() / 15000.0;
 	renderer.render( scene, camera );
+	var j=0;
+	draw_circle(ctx, curr_xy[j<<1], curr_xy[(j<<1)+1]);
 }
 </script>
 </body>
