@@ -1,0 +1,235 @@
+
+<!doctype html>
+<html>
+<head>
+<title>Image Heightmap to RAW converter</title>
+<meta charset="UTF-8">
+<meta name="description" content="Unity Height Map to RAW converter. Unity3D terrain heightmap visualizer">
+<style>
+* {padding: 0; margin: 0}
+body {
+	padding: 25px;
+	margin: 0;
+	font-family: verdana;
+}
+#preview {
+	width: 50%;
+	box-shadow: 1px 1px 5px #aaa;
+	position: absolute;
+	top: 60px;
+	left: 25px;
+}
+#img_url {width: 20%;}
+input[type="button"] {
+	background-color: #0a0;
+	color:#fff;
+	padding: 4px 8px;
+	border: 0px;
+	border-radius: 5px;
+	outline: 0;
+}
+
+input[type="button"]:hover {background-color: #333}
+input[type="button"]:active {background-color: #fa0}
+input[type="button"]:disabled {background-color: #aaa}
+
+canvas {
+	box-shadow: 1px 1px 5px #aaa;
+	position: absolute;
+	left: 50%;
+	margin-left: 55px;
+	top: 60px;
+}
+</style>
+</head>
+<body>
+<input type="text" value="TDM1_DEM__30_N07E081_DEM_QL.png" id="img_url">
+<input type="button" value="Load image" id="load">
+<input type="button" id="download" value="Download raw" disabled="disabled">
+<br>
+<img alt="Heightmap Preview" id="preview" src="">
+<script src="https://ajax.googleapis.com/ajax/libs/threejs/r69/three.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
+
+<script>
+var img = null;
+var W = 0;
+var H = 0;
+var data = null;
+var camera, scene, renderer;
+var mesh;
+
+$(function() {
+	img = $('#preview');			
+	makeScene();
+	renderer.render( scene, camera );
+	img.on('load', function() {
+		//if (img.attr('src').indexOf('RDsRy9V.jpg') > 0) return;
+		W = img.get(0).naturalWidth/2;
+		H = img.get(0).naturalHeight/2;
+		console.log(W, H);
+		img.css({'opacity': 0.75});
+		$('#load').attr({'disabled': 'disabled'});
+		$('#download').attr({'disabled': 'disabled'});
+		setTimeout(processData, 100);
+	});
+	$('#load').click(function() {
+		data = null;
+		var t = (new Date()).getTime();
+		document.title = 'Loading the image';
+		img
+			//.attr({'src': 'getImage.php?url=' + encodeURIComponent($('#img_url').val()) + '&t=' + t})
+			.attr({
+				'crossOrigin': "Anonymous",
+				'src': $('#img_url').val() + '?t=' + t
+			})
+			.css({'opacity': 0.5});
+	});
+	
+	$('#download').click(function() {
+		var data = generateData();
+		
+		var blob = new Blob([data], {type: "octet/stream"});
+		
+		if (navigator.appVersion.toString().indexOf('.NET') > 0) {
+			window.navigator.msSaveBlob(blob, 'terrain.raw');
+		} else {		
+			var pom = document.createElement('a');
+			pom.setAttribute('href', window.URL.createObjectURL(blob));//"data:application/octet-stream," + encodeURIComponent(data));
+			pom.setAttribute('download', 'terrain.raw');
+			document.body.appendChild(pom);
+			pom.click();
+		}
+	});
+});
+
+function generateData() {
+	var ret = new Uint8Array(W * H);
+	var idx;
+	var i = 0;
+	for (y = 0; y < H; y++) {
+		for (x = 0; x < W; x++) {
+			idx = (x + y * W ) * 4;
+			ret[++i] = Math.round((data[idx] + data[idx +1] + data[idx + 2]) / 3);
+		}
+	}
+	return ret;
+}
+
+function makeScene() {
+	renderer = new THREE.WebGLRenderer({'antialias': true});
+	var CW = window.innerWidth / 2 - 75;
+	var CH = window.innerHeight - 85;
+	//renderer.setPixelRatio( window.devicePixelRatio );
+	renderer.setSize(CW, CH);
+	renderer.setClearColor(0xffffff);
+	document.body.appendChild( renderer.domElement );
+	
+	camera = new THREE.PerspectiveCamera( 40, CW / CH, 0.1, 1000);
+	camera.position.y = 1;
+	camera.position.x = 1;
+	camera.position.z = 1;
+	camera.lookAt(new THREE.Vector3( 0, 0, 0 ));
+	
+	scene = new THREE.Scene();
+	
+	var directionalLight = new THREE.DirectionalLight( 0xffffff, 0.3 );
+	directionalLight.position.set( -1, 1, -1 );
+	scene.add( directionalLight );
+	
+	var directionalLight2 = new THREE.DirectionalLight( 0xffffff, 0.8 );
+	directionalLight2.position.set( 5, 1, 1 );
+	scene.add( directionalLight2 );
+}
+
+function processData() {
+	document.title = 'Getting image data';
+	data = getImageData(img[0]);
+	$('#download').removeAttr('disabled');
+	$('#load').removeAttr('disabled');
+	makeMesh();
+	animate();
+}
+
+function transform(h) {
+	return h;
+}
+
+function makeMesh() {
+	scene.remove(mesh);
+	geom = new THREE.Geometry(); 
+	
+	var x, y, height;
+	height = 0.1;
+	
+	var limit = 513;
+	
+	var Hscale = 1;
+	var Wscale = 1;
+	var Wmax = W;
+	var Hmax = H;
+	
+	if (W > limit) {Wscale = W / limit; Wmax = limit;}
+	if (H > limit) {Hscale = H / limit; Hmax = limit;}
+	
+	
+	var cnt = 0;
+	for (y = 0; y < Hmax; y++) {
+		document.title = Math.round(y*100/(Hmax-1)) + '% - adding vertices';
+		for (x = 0; x < Wmax; x++) {
+			idx = (Math.floor(x * Wscale) + Math.floor(y * Hscale) * W ) * 4;
+			geom.vertices.push(new THREE.Vector3(
+				x / (Wmax - 1) - 0.5, 
+				transform(1 + data[idx] + data[idx +1] + data[idx + 2]) * height / 768,
+				y / (Hmax - 1) - 0.5
+			));
+			cnt++;
+		}
+	}
+
+	for (x = 0; x < Wmax - 1; x++) {
+		document.title = Math.round(x*100/(Wmax-2)) + '% - adding faces';
+		for (y = 0; y < Hmax - 1; y++) {
+			var idx = x + y * Wmax;
+			// Triangle one
+			geom.faces.push(new THREE.Face3( idx + 1, idx, idx + Wmax + 1 ));
+			// Triangle two
+			geom.faces.push( new THREE.Face3( idx + Wmax + 1, idx, idx + Wmax ) );
+		}
+	}
+	
+	document.title = 'Computing normals';
+	geom.computeFaceNormals();
+
+	document.title = 'Creating mesh object';
+	//mesh = new THREE.Mesh( geom, new THREE.MeshNormalMaterial() );
+	mesh = new THREE.Mesh( geom, new THREE.MeshLambertMaterial({'color': 0xffffff}));
+
+	mesh.rotation.y = -Math.PI * .2;
+
+	document.title = 'Adding to the scene';
+	scene.add(mesh);
+	geom.dispose();
+	document.title = 'Starting animation...';
+}
+
+function getImageData(img) {
+	var canvas = document.createElement('canvas');
+	canvas.width = W;
+	canvas.height = H;
+	canvas.getContext('2d').drawImage(img, 0, 0, W, H);
+	var ctx = canvas.getContext('2d');
+	var d = ctx.getImageData(0, 0, W, H); 
+	return d.data;
+}
+
+function animate() {
+	document.title = '';
+	requestAnimationFrame( animate );
+	//mesh.rotation.y += 0.005;
+	mesh.rotation.y = (new Date()).getTime() / 15000.0;
+	renderer.render( scene, camera );
+}
+</script>
+</body>
+</html>
