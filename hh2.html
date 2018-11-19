@@ -144,8 +144,8 @@ canvas {
                 ctx.strokeStyle = "rgb(0,255,0)";
                 curr_img_pyr = new jsfeat.pyramid_t(3);
                 prev_img_pyr = new jsfeat.pyramid_t(3);
-                curr_img_pyr.allocate(640, 480, jsfeat.U8_t|jsfeat.C1_t);
-                prev_img_pyr.allocate(640, 480, jsfeat.U8_t|jsfeat.C1_t);
+                curr_img_pyr.allocate(320, 240, jsfeat.U8_t|jsfeat.C1_t);
+                prev_img_pyr.allocate(320, 240, jsfeat.U8_t|jsfeat.C1_t);
                 point_count = 0;
                 point_status = new Uint8Array(100);
                 prev_xy = new Float32Array(100*2);
