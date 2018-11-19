@@ -31,14 +31,14 @@
 body {
 	padding: 25px;
 	margin: 0;
-	top: 400px;
+	top: 300px;
 	font-family: verdana;
 }
 #preview {
 	width: 50%;
 	box-shadow: 1px 1px 5px #aaa;
 	position: absolute;
-	top: 460px;
+	top: 360px;
 	left: 25px;
 }
 #img_url {width: 20%;}
@@ -60,14 +60,14 @@ canvas {
 	position: absolute;
 	left: 50%;
 	margin-left: 55px;
-	top: 460px;
+	top: 360px;
 }
 </style>
 </head>
 <body>
-	<video id="webcam" width="640" height="480" style="display:none;"></video>
-            <div style=" width:640px;height:480px;margin: 10px auto">
-                <canvas id="canvas" width="640" height="480"></canvas>
+	<video id="webcam" width="320" height="240" style="display:none;"></video>
+            <div style=" width:320px;height:240px;margin: 10px auto">
+                <canvas id="canvas" width="320" height="240"></canvas>
                 <div id="no_rtc" class="alert alert-error" style="display:none;"></div>
                 <div id="log" class="alert alert-info"></div>
             </div>
@@ -97,7 +97,7 @@ canvas {
                             attempts++;
                             setTimeout(findVideoSize, 200);
                         } else {
-                            onDimensionsReady(640, 480);
+                            onDimensionsReady(320,240);
                         }
                     }
                 };
@@ -164,8 +164,8 @@ canvas {
                 compatibility.requestAnimationFrame(tick);
                 stat.new_frame();
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
-                    ctx.drawImage(video, 0, 0, 640, 480);
-                    var imageData = ctx.getImageData(0, 0, 640, 480);
+                    ctx.drawImage(video, 0, 0, 320, 240);
+                    var imageData = ctx.getImageData(0, 0, 320, 240);
                     // swap flow data
                     var _pt_xy = prev_xy;
                     prev_xy = curr_xy;
@@ -174,7 +174,7 @@ canvas {
                     prev_img_pyr = curr_img_pyr;
                     curr_img_pyr = _pyr;
                     stat.start("grayscale");
-                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, curr_img_pyr.data[0]);
+                    jsfeat.imgproc.grayscale(imageData.data, 320, 240, curr_img_pyr.data[0]);
                     stat.stop("grayscale");
                     stat.start("build image pyramid");
                     curr_img_pyr.build(curr_img_pyr.data[0], true);
