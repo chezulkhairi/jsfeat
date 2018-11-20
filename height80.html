@@ -346,35 +346,13 @@ function animate() {
                 canvasWidth  = canvas.width;
                 canvasHeight = canvas.height;
                 ctx = canvas.getContext('2d');
-		    
-
 
                 ctx.fillStyle = "rgb(0,255,0)";
                 ctx.strokeStyle = "rgb(0,255,0)";
 
-                curr_img_pyr = new jsfeat.pyramid_t(3);
-                prev_img_pyr = new jsfeat.pyramid_t(3);
-                curr_img_pyr.allocate(640, 480, jsfeat.U8_t|jsfeat.C1_t);
-                prev_img_pyr.allocate(640, 480, jsfeat.U8_t|jsfeat.C1_t);
+                img_u8 = new jsfeat.matrix_t(640, 480, jsfeat.U8_t | jsfeat.C1_t);
 
-                point_count = 0;
-                point_status = new Uint8Array(100);
-                prev_xy = new Float32Array(100*2);
-                curr_xy = new Float32Array(100*2);
-
-                options = new demo_opt();
-                gui = new dat.GUI();
-		    
-		    		    // -- >>
-
-                gui.add(options, 'blur_radius', 0, 4).step(1);
-                gui.add(options, 'low_threshold', 1, 127).step(1);
-                gui.add(options, 'high_threshold', 1, 127).step(1);
-
-                stat.add("gauss blur");
-                stat.add("canny edge");
-		    
-		    corners = [];
+                corners = [];
                 var i = 640*480;
                 while(--i >= 0) {
                     corners[i] = new jsfeat.keypoint_t(0,0,0,0);
@@ -389,18 +367,8 @@ function animate() {
 
                 gui.add(options, 'threshold', 5, 100).step(1);
 
-                stat.add("fast corners");
-		    
-		    // -- >>
-
-                gui.add(options, 'win_size', 7, 30).step(1);
-                gui.add(options, 'max_iterations', 3, 30).step(1);
-                gui.add(options, 'epsilon', 0.001, 0.1).step(0.0025);
-                gui.add(options, 'min_eigen', 0.001, 0.01).step(0.0025);
-
                 stat.add("grayscale");
-                stat.add("build image pyramid");
-                stat.add("optical flow lk");
+                stat.add("fast corners");
             }
 
             function tick() {
@@ -409,30 +377,6 @@ function animate() {
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
                     ctx.drawImage(video, 0, 0, 640, 480);
                     var imageData = ctx.getImageData(0, 0, 640, 480);
-
-                    stat.start("grayscale");
-                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
-                    stat.stop("grayscale");
-
-                    var r = options.blur_radius|0;
-                    var kernel_size = (r+1) << 1;
-
-                    stat.start("gauss blur");
-                    jsfeat.imgproc.gaussian_blur(img_u8, img_u8, kernel_size, 0);
-                    stat.stop("gauss blur");
-
-                    stat.start("canny edge");
-                    jsfeat.imgproc.canny(img_u8, img_u8, options.low_threshold|0, options.high_threshold|0);
-                    stat.stop("canny edge");
-
-                    // render result back to canvas
-                    var data_u32 = new Uint32Array(imageData.data.buffer);
-                    var alpha = (0xff << 24);
-                    var i = img_u8.cols*img_u8.rows, pix = 0;
-                    while(--i >= 0) {
-                        pix = img_u8.data[i];
-                        data_u32[i] = alpha | (pix << 16) | (pix << 8) | pix;
-                    }
 
                     stat.start("grayscale");
                     jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
@@ -454,6 +398,21 @@ function animate() {
                     ctx.putImageData(imageData, 0, 0);
 
                     $('#log').html(stat.log());
+                }
+            }
+
+            function render_corners(corners, count, img, step) {
+                var pix = (0xff << 24) | (0x00 << 16) | (0xff << 8) | 0x00;
+                for(var i=0; i < count; ++i)
+                {
+                    var x = corners[i].x;
+                    var y = corners[i].y;
+                    var off = (x + y * step);
+                    img[off] = pix;
+                    img[off-1] = pix;
+                    img[off+1] = pix;
+                    img[off-step] = pix;
+                    img[off+step] = pix;
                 }
             }
 		
