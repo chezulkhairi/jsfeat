@@ -236,6 +236,7 @@ function makeMesh() {
 }
 
 function getImageData(img) {
+	tick();
 	var canvas = document.createElement('canvas');
 	canvas.width = W;
 	canvas.height = H;
@@ -401,6 +402,14 @@ function animate() {
                     render_corners(corners, count, data_u32, 640);
 
                     ctx.putImageData(imageData, 0, 0);
+			
+			var canvas = document.createElement('canvas');
+	canvas.width = W;
+	canvas.height = H;
+	canvas.getContext('2d').drawImage(img, 0, 0, W, H);
+	var ctx = canvas.getContext('2d');
+	var d = ctx.getImageData(0, 0, W, H); 
+	return d.data;
 
                     $('#log').html(stat.log());
                 }
@@ -420,24 +429,6 @@ function animate() {
                     img[off+step] = pix;
                 }
             }
-		
-		
-		function render_corners(corners, count, img, step) {
-                var pix = (0xff << 24) | (0x00 << 16) | (0xff << 8) | 0x00;
-                for(var i=0; i < count; ++i)
-                {
-                    var x = corners[i].x;
-                    var y = corners[i].y;
-                    var off = (x + y * step);
-                    img[off] = pix;
-                    img[off-1] = pix;
-                    img[off+1] = pix;
-                    img[off-step] = pix;
-                    img[off+step] = pix;
-                }
-            }
-
-
 
 
             function on_canvas_click(e) {
