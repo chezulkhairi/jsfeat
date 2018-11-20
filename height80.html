@@ -420,28 +420,7 @@ function animate() {
 
                     ctx.putImageData(imageData, 0, 0);
 			
-			var _pt_xy = prev_xy;
-                    prev_xy = curr_xy;
-                    curr_xy = _pt_xy;
-                    var _pyr = prev_img_pyr;
-                    prev_img_pyr = curr_img_pyr;
-                    curr_img_pyr = _pyr;
 
-                    stat.start("grayscale");
-                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, curr_img_pyr.data[0]);
-                    stat.stop("grayscale");
-
-                    stat.start("build image pyramid");
-                    curr_img_pyr.build(curr_img_pyr.data[0], true);
-                    stat.stop("build image pyramid");
-
-                    stat.start("optical flow lk");
-                    jsfeat.optical_flow_lk.track(prev_img_pyr, curr_img_pyr, prev_xy, curr_xy, point_count, options.win_size|0, options.max_iterations|0, point_status, options.epsilon, options.min_eigen);
-                    stat.stop("optical flow lk");
-
-                    prune_oflow_points(ctx);
-
-                    $('#log').html(stat.log() + '<br/>click to add tracking points: ' + point_count);
 
                     $('#log').html(stat.log());
 			//-->>
