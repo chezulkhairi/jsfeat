@@ -166,7 +166,15 @@ function makeScene() {
 
 function processData() {
 	document.title = 'Getting image data';
-	data = getImageData(img[0]);
+	//data = getImageData(img[0]);
+	
+	compatibility.requestAnimationFrame(tick);
+                stat.new_frame();
+                if (video.readyState === video.HAVE_ENOUGH_DATA) {
+                    ctx.drawImage(video, 0, 0, 640, 480);
+                    data = ctx.getImageData(0, 0, 640, 480);
+	
+	
 	$('#download').removeAttr('disabled');
 	$('#load').removeAttr('disabled');
 	makeMesh();
@@ -236,7 +244,6 @@ function makeMesh() {
 }
 
 function getImageData(img) {
-	compatibility.requestAnimationFrame(tick);
 	var canvas = document.createElement('canvas');
 	canvas.width = W;
 	canvas.height = H;
