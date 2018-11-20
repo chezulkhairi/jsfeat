@@ -392,8 +392,7 @@ function animate() {
                 if (video.readyState === video.HAVE_ENOUGH_DATA) {
                     ctx.drawImage(video, 0, 0, 640, 480);
                     var imageData = ctx.getImageData(0, 0, 640, 480);
-			
-			// -->>
+
                     stat.start("grayscale");
                     jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
                     stat.stop("grayscale");
@@ -419,20 +418,12 @@ function animate() {
                     }
 
                     ctx.putImageData(imageData, 0, 0);
-			
-
 
                     $('#log').html(stat.log());
-			//-->>
-
-                    // swap flow data
-
-                    
-			
-			
-			
                 }
             }
+
+
 
             function on_canvas_click(e) {
                 var coords = canvas.relMouseCoords(e);
