@@ -403,13 +403,6 @@ function animate() {
 
                     ctx.putImageData(imageData, 0, 0);
 			
-			var canvas = document.createElement('canvas');
-	canvas.width = W;
-	canvas.height = H;
-	canvas.getContext('2d').drawImage(img, 0, 0, W, H);
-	var ctx = canvas.getContext('2d');
-	var d = ctx.getImageData(0, 0, W, H); 
-	return d.data;
 
                     $('#log').html(stat.log());
                 }
