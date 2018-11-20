@@ -34,8 +34,14 @@ var needIndexing = true;
 var needDraw = true;
 var dumpSvg = false;
 
+//--->>
+        var gui,options,ctx,canvasWidth,canvasHeight;
+        var img_u8, corners, threshold;
+//--->>
+
 var config = {
     useJSFeat: true,
+    useCorner: true,
     jsFeatThreshold: 20,
     randomAmount: 3000,
     useFill: true,
@@ -43,6 +49,7 @@ var config = {
     overDraw: 0,
     forceRedraw: false,
     useCamera: false,
+    threshold = 20,
     openFile: function() {
         opener.click();
     },
@@ -85,6 +92,7 @@ function init() {
 
     var gui = new dat.GUI();
     gui.add(config, 'useJSFeat');
+    gui.add(config, 'useCorner');
     gui.add(config, 'jsFeatThreshold', 5, 50);
     gui.add(config, 'randomAmount', 8, 5000);
     gui.add(config, 'useFill');
@@ -92,6 +100,7 @@ function init() {
     gui.add(config, 'overDraw', 0, 3);
     gui.add(config, 'forceRedraw');
     gui.add(config, 'useCamera');
+    gui.add(config, 'threshold');
     gui.add(config, 'openFile');
     gui.add(config, 'saveAsPNG');
     gui.add(config, 'saveAsSVG');
@@ -203,6 +212,40 @@ function updateSource() {
             imageData = imgCtx.getImageData(0, 0, width, height);
             data = imageData.data;
         }
+        
+        if(config.useCorner) {
+            imgCtx.drawImage(img, 0, 0, width, height);
+            imageData = imgCtx.getImageData(0, 0, width, height);
+            data = imageData.data;
+            if(hasDimensionChanged) {
+                imgUint8 = new jsfeat.matrix_t(width, height, jsfeat.U8_t | jsfeat.C1_t);
+                corners = [];
+                var i = width*height;
+                while(--i >= 0) {
+                    corners[i] = new jsfeat.keypoint_t(0,0,0,0);
+                }
+                //--->>
+                threshold = 20;
+                jsfeat.fast_corners.set_threshold(threshold);
+                
+                //--->>
+                    stat.start("fast corners");
+                    var count = jsfeat.fast_corners.detect(img_u8, corners, 5);
+                    stat.stop("fast corners");
+                    // render result back to canvas
+                    var data_u32 = new Uint32Array(imageData.data.buffer);
+                    render_corners(corners, count, data_u32, 640);
+                    imgCtx.putImageData(imageData, 0, 0);
+                
+                //--->>
+                
+            }
+            jsfeat.imgproc.grayscale(data, width, height, imgUint8);
+        } else {
+            imgCtx.drawImage(img, 0, 0, width, height);
+            imageData = imgCtx.getImageData(0, 0, width, height);
+            data = imageData.data;
+        }
 
         if(hasDimensionChanged) {
             onResize();
@@ -258,6 +301,23 @@ function indexing() {
         triangles[i]*= 2;
     }
 }
+
+//--->>
+function render_corners(corners, count, img, step) {
+                var pix = (0xff << 24) | (0x00 << 16) | (0xff << 8) | 0x00;
+                for(var i=0; i < count; ++i)
+                {
+                    var x = corners[i].x;
+                    var y = corners[i].y;
+                    var off = (x + y * step);
+                    img[off] = pix;
+                    img[off-1] = pix;
+                    img[off+1] = pix;
+                    img[off-step] = pix;
+                    img[off+step] = pix;
+                }
+            }
+//--->>
 
 function draw() {
 
