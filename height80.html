@@ -236,7 +236,7 @@ function makeMesh() {
 }
 
 function getImageData(img) {
-	tick();
+	compatibility.requestAnimationFrame(tick);
 	var canvas = document.createElement('canvas');
 	canvas.width = W;
 	canvas.height = H;
