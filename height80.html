@@ -419,12 +419,8 @@ function animate() {
                     }
 
                     ctx.putImageData(imageData, 0, 0);
-
-                    $('#log').html(stat.log());
-			//-->>
-
-                    // swap flow data
-                    var _pt_xy = prev_xy;
+			
+			var _pt_xy = prev_xy;
                     prev_xy = curr_xy;
                     curr_xy = _pt_xy;
                     var _pyr = prev_img_pyr;
@@ -446,6 +442,13 @@ function animate() {
                     prune_oflow_points(ctx);
 
                     $('#log').html(stat.log() + '<br/>click to add tracking points: ' + point_count);
+
+                    $('#log').html(stat.log());
+			//-->>
+
+                    // swap flow data
+
+                    
 			
 			
 			
