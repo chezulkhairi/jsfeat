@@ -30,7 +30,7 @@
     renderer.setSize(width, height);
 
     var terrainLoader = new THREE.TerrainLoader();
-    terrainLoader.load('../assets/jotunheimen.bin', function(data) {
+    terrainLoader.load('./assets/jotunheimen.bin', function(data) {
 
         var geometry = new THREE.PlaneGeometry(60, 60, 199, 199);
 
