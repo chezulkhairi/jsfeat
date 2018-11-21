@@ -35,6 +35,7 @@ var needDraw = true;
 var dumpSvg = false;
 
 var config = {
+    useCorner: false,
     useJSFeat: true,
     jsFeatThreshold: 20,
     randomAmount: 3000,
@@ -84,6 +85,7 @@ function init() {
     opener.addEventListener('change', readImage);
 
     var gui = new dat.GUI();
+    gui.add(config, 'useCorner');
     gui.add(config, 'useJSFeat');
     gui.add(config, 'jsFeatThreshold', 5, 50);
     gui.add(config, 'randomAmount', 8, 5000);
@@ -196,6 +198,8 @@ function updateSource() {
                 while(--i >= 0) {
                     corners[i] = new jsfeat.keypoint_t(0,0,0,0);
                 }
+              
+              
             }
             jsfeat.imgproc.grayscale(data, width, height, imgUint8);
         } else {
@@ -204,6 +208,45 @@ function updateSource() {
             data = imageData.data;
         }
 
+              if(config.useCorner) {
+            imgCtx.drawImage(img, 0, 0, width, height);
+            imageData = imgCtx.getImageData(0, 0, width, height);
+            data = imageData.data;
+            if(hasDimensionChanged) {
+                imgUint8 = new jsfeat.matrix_t(width, height, jsfeat.U8_t | jsfeat.C1_t);
+                corners = [];
+                var i = width*height;
+                while(--i >= 0) {
+                    corners[i] = new jsfeat.keypoint_t(0,0,0,0);
+                }
+              
+              
+            }
+            jsfeat.imgproc.grayscale(data, width, height, imgUint8);
+          
+//imageData = imgCtx.getImageData(0, 0, width, height);
+threshold = 20;           
+jsfeat.fast_corners.set_threshold(threshold);    
+jsfeat.imgproc.grayscale(imageData.data, width, height, imgUint8);
+//stat.stop("grayscale");         
+jsfeat.fast_corners.set_threshold(threshold);
+//stat.start("fast corners");
+var count = jsfeat.fast_corners.detect(imgUint8, corners, 5);
+//stat.stop("fast corners");
+ // render result back to canvas
+var data_u32 = new Uint32Array(imageData.data.buffer);
+render_corners(corners, count, data_u32, 640);
+imgCtx.drawImage(img, 0, 0, width, height);
+          
+          
+          
+          
+        } else {
+            imgCtx.drawImage(img, 0, 0, width, height);
+            imageData = imgCtx.getImageData(0, 0, width, height);
+            data = imageData.data;
+        }
+      
         if(hasDimensionChanged) {
             onResize();
         }
@@ -224,33 +267,9 @@ function indexing() {
         for( i = 0; i < len; i++) {
             corner = corners[i];
             vertices.push([corner.x, corner.y]);
+          
+          
         }
-        
-        //----->>
-                corners = [];
-                var i = 640*480;
-                while(--i >= 0) {
-                    corners[i] = new jsfeat.keypoint_t(0,0,0,0);
-                }
-                threshold = 20;
-                jsfeat.fast_corners.set_threshold(threshold);
-        
-                var imageData = ctx.getImageData(0, 0, 640, 480);
-                    stat.start("grayscale");
-                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
-                    stat.stop("grayscale");
-                    jsfeat.fast_corners.set_threshold(threshold);
-                    stat.start("fast corners");
-                    var count = jsfeat.fast_corners.detect(img_u8, corners, 5);
-                    stat.stop("fast corners");
-                    // render result back to canvas
-                    var data_u32 = new Uint32Array(imageData.data.buffer);
-                    render_corners(corners, count, data_u32, 640);
-                    imgCtx.drawImage(img, 0, 0, width, height);
-        
-        //----->>
-        
-        
     } else {
         for( i = 0, len = config.randomAmount - 8 ; i < len; i++) {
             vertices[i] = [(1 - Math.pow(Math.random(), 2)) * width | 0, Math.random() * height | 0];
@@ -375,29 +394,12 @@ function draw() {
 
 img = imgSource = new Image();
 img.crossOrigin = 'Anonymous';
-img.src = 'tampere2.png';
+img.src = 'https://github.com/chezulkhairi/jsfeat/blob/master/delaunay/tampere2.png';
 if(img.width) {
     init();
 } else {
     img.onload = init;
 }
-
-//----->>
-            function render_corners(corners, count, img, step) {
-                var pix = (0xff << 24) | (0x00 << 16) | (0xff << 8) | 0x00;
-                for(var i=0; i < count; ++i)
-                {
-                    var x = corners[i].x;
-                    var y = corners[i].y;
-                    var off = (x + y * step);
-                    img[off] = pix;
-                    img[off-1] = pix;
-                    img[off+1] = pix;
-                    img[off-step] = pix;
-                    img[off+step] = pix;
-                }
-            }
-//----->>
 
 function useCamera(isEnable) {
     if(isEnable) {
@@ -446,3 +448,18 @@ function useCamera(isEnable) {
         }
     }
 }
+
+function render_corners(corners, count, img, step) {
+                var pix = (0xff << 24) | (0x00 << 16) | (0xff << 8) | 0x00;
+                for(var i=0; i < count; ++i)
+                {
+                    var x = corners[i].x;
+                    var y = corners[i].y;
+                    var off = (x + y * step);
+                    img[off] = pix;
+                    img[off-1] = pix;
+                    img[off+1] = pix;
+                    img[off-step] = pix;
+                    img[off+step] = pix;
+                }
+            }
