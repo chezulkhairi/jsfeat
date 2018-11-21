@@ -349,7 +349,7 @@ function draw() {
 
 img = imgSource = new Image();
 img.crossOrigin = 'Anonymous';
-img.src = 'tampere.png';
+img.src = 'tampere2.png';
 if(img.width) {
     init();
 } else {
