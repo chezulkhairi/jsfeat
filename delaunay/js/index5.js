@@ -464,7 +464,14 @@ function render_corners(corners, count, img, step) {
                 }
             }
             
-            
+// --->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
+
+$(function() {
+	img = imgCtx.getImageData(0, 0, width, height);		
+	makeScene();
+	renderer.render( scene, camera );
+	setTimeout(processData, 100);
+	});
             
 function generateData() {
 	var ret = new Uint8Array(W * H);
@@ -507,7 +514,8 @@ function makeScene() {
 
 function processData() {
 	document.title = 'Getting image data';
-	data = getImageData(img[0]);
+	//data = getImageData(img[0]);
+	data = imgCtx.getImageData(0, 0, width, height);
 	$('#download').removeAttr('disabled');
 	$('#load').removeAttr('disabled');
 	makeMesh();
@@ -590,6 +598,6 @@ function animate() {
 	document.title = '';
 	requestAnimationFrame( animate );
 	//mesh.rotation.y += 0.005;
-	mesh.rotation.y = (new Date()).getTime() / 5000.0;
+	mesh.rotation.y = (new Date()).getTime() / 15000.0;
 	renderer.render( scene, camera );
 }
