@@ -246,7 +246,7 @@ function indexing() {
                     // render result back to canvas
                     var data_u32 = new Uint32Array(imageData.data.buffer);
                     render_corners(corners, count, data_u32, 640);
-                    imgCtx.putImageData(imageData, 0, 0);
+                    imgCtx.drawImage(img, 0, 0, width, height);
         
         //----->>
         
