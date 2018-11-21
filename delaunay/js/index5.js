@@ -599,6 +599,6 @@ function animate() {
 	document.title = '';
 	requestAnimationFrame( animate );
 	//mesh.rotation.y += 0.005;
-	mesh.rotation.y = (new Date()).getTime() / 15000.0;
+	//mesh.rotation.y = (new Date()).getTime() / 15000.0;
 	renderer.render( scene, camera );
 }
