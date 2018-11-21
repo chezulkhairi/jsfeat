@@ -225,6 +225,35 @@ function indexing() {
             corner = corners[i];
             vertices.push([corner.x, corner.y]);
         }
+        
+        //----->>
+                corners = [];
+                var i = 640*480;
+                while(--i >= 0) {
+                    corners[i] = new jsfeat.keypoint_t(0,0,0,0);
+                }
+                threshold = 20;
+                jsfeat.fast_corners.set_threshold(threshold);
+        
+                var imageData = ctx.getImageData(0, 0, 640, 480);
+                    stat.start("grayscale");
+                    jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
+                    stat.stop("grayscale");
+                    if(threshold != options.threshold) {
+                        threshold = options.threshold|0;
+                        jsfeat.fast_corners.set_threshold(threshold);
+                    }
+                    stat.start("fast corners");
+                    var count = jsfeat.fast_corners.detect(img_u8, corners, 5);
+                    stat.stop("fast corners");
+                    // render result back to canvas
+                    var data_u32 = new Uint32Array(imageData.data.buffer);
+                    render_corners(corners, count, data_u32, 640);
+                    imgCtx.putImageData(imageData, 0, 0);
+        
+        //----->>
+        
+        
     } else {
         for( i = 0, len = config.randomAmount - 8 ; i < len; i++) {
             vertices[i] = [(1 - Math.pow(Math.random(), 2)) * width | 0, Math.random() * height | 0];
@@ -355,6 +384,23 @@ if(img.width) {
 } else {
     img.onload = init;
 }
+
+//----->>
+            function render_corners(corners, count, img, step) {
+                var pix = (0xff << 24) | (0x00 << 16) | (0xff << 8) | 0x00;
+                for(var i=0; i < count; ++i)
+                {
+                    var x = corners[i].x;
+                    var y = corners[i].y;
+                    var off = (x + y * step);
+                    img[off] = pix;
+                    img[off-1] = pix;
+                    img[off+1] = pix;
+                    img[off-step] = pix;
+                    img[off+step] = pix;
+                }
+            }
+//----->>
 
 function useCamera(isEnable) {
     if(isEnable) {
