@@ -467,12 +467,14 @@ function render_corners(corners, count, img, step) {
             
 // --->>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 
-$(function() {
+var camera, scene, renderer;
+var mesh;
+
 	img = imgCtx.getImageData(0, 0, width, height);		
 	makeScene();
 	renderer.render( scene, camera );
 	setTimeout(processData, 100);
-	});
+
             
 function generateData() {
 	var ret = new Uint8Array(W * H);
