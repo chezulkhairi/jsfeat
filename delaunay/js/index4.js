@@ -239,10 +239,7 @@ function indexing() {
                     stat.start("grayscale");
                     jsfeat.imgproc.grayscale(imageData.data, 640, 480, img_u8);
                     stat.stop("grayscale");
-                    if(threshold != options.threshold) {
-                        threshold = options.threshold|0;
-                        jsfeat.fast_corners.set_threshold(threshold);
-                    }
+                    jsfeat.fast_corners.set_threshold(threshold);
                     stat.start("fast corners");
                     var count = jsfeat.fast_corners.detect(img_u8, corners, 5);
                     stat.stop("fast corners");
