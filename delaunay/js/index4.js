@@ -394,7 +394,7 @@ function draw() {
 
 img = imgSource = new Image();
 img.crossOrigin = 'Anonymous';
-img.src = 'https://github.com/chezulkhairi/jsfeat/blob/master/delaunay/tampere2.png';
+img.src = 'https://s3-us-west-2.amazonaws.com/s.cdpn.io/6043/the_pearl_girl.jpg';
 if(img.width) {
     init();
 } else {
