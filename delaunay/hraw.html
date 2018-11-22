@@ -51,21 +51,15 @@ canvas {
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/2.1.3/jquery.min.js"></script>
 
 <script>
-var img = null;
-var W = 0;
-var H = 0;
+img = imgSource = new Image();
+img.crossOrigin = 'Anonymous';
+img.src = 'TDM1_DEM__30_N07E081_DEM_QL.png';
+var W = 640;
+var H = 480;
 var data = null;
 var camera, scene, renderer;
 var mesh;
-
-	img = $('#preview');			
-	makeScene();
-	renderer.render( scene, camera );
-		W = img.get(0).naturalWidth;
-		H = img.get(0).naturalHeight;
-		console.log(W, H);
-		img.css({'opacity': 1});
-		setTimeout(processData, 100);
+setTimeout(processData, 100);
 
 function generateData() {
 	var ret = new Uint8Array(W * H);
