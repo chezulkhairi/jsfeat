@@ -1,6 +1,6 @@
 html, body {
   position: absolute;
-  width: 30%;
+  width: 50%;
   height: 30%;
   margin: 0 0;
   overflow: visible;
@@ -38,7 +38,7 @@ a {
 
 
 .container {
-    width: 50%;
+    width: 60%;
   margin-top: 5px;
 }
 
