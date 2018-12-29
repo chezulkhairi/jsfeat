@@ -93,11 +93,11 @@ a {
         // Function 1
         var funcKey1 = "start";
         var args1 = "";
-        var label1 = "Start Buzzer"; // button label 1 (set to "" to disable)
+        var label1 = "StartBuzz"; // button label 1 (set to "" to disable)
         // Function 2
         var funcKey2 = "trunk";
         var args2 = "";
-        var label2 = "Start Led"; // button label 2 (set to "" to disable)
+        var label2 = "StartLed"; // button label 2 (set to "" to disable)
         // Function 3
         var funcKey3 = "lock";
         var args3 = "";
@@ -207,7 +207,7 @@ a {
               statusTimer = setTimeout(function() {
                 statusTimer = null;
                 alert.hide();
-              }, 550);
+              }, 1750);
             }, 250);
           }
           else {
@@ -354,18 +354,19 @@ a {
             <button type="button" class="btn btn-primary btn-lg" id="button-4">BUTTON 4</button>
             <input type="text" class="form-control" value="---" readonly id="var-val-4">
           </div>
+              <input class="opener" type="file"/>
+<div class="info">
+  <div class="info-title">Delaunay + JSFeat Canvas Demo</div>
+  <div class="info-desc">A demo I will present in a local meetup. It uses <a href="https://github.com/inspirit/jsfeat" target="_blank">JSFeat</a> to detect the feature points and use <a href="https://github.com/ironwallaby/delaunay" target="_blank">delaunay</a> to create the triangle geometry. This demo is using canvas as renderer, and I didn't fully optimize it. WebGL version will be coming soon with some fake 3D enhancement. *You can also drag and drop your images and exports it as PNG or SVG. </div>
+  <div class="info-links"><a href="https://twitter.com/edankwan" target="_blank">@edankwan</a></div>
+</div>
         </div>
       </div>
 
       
           
     </div>
-    <input class="opener" type="file"/>
-<div class="info">
-  <div class="info-title">Delaunay + JSFeat Canvas Demo</div>
-  <div class="info-desc">A demo I will present in a local meetup. It uses <a href="https://github.com/inspirit/jsfeat" target="_blank">JSFeat</a> to detect the feature points and use <a href="https://github.com/ironwallaby/delaunay" target="_blank">delaunay</a> to create the triangle geometry. This demo is using canvas as renderer, and I didn't fully optimize it. WebGL version will be coming soon with some fake 3D enhancement. *You can also drag and drop your images and exports it as PNG or SVG. </div>
-  <div class="info-links"><a href="https://twitter.com/edankwan" target="_blank">@edankwan</a></div>
-</div>
+
    
            
   </body>
