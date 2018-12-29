@@ -527,3 +527,27 @@ function render_corners(corners, count, img, step) {
 				
 			});
 		});
+
+		var picker2 = $('#color-picker2');
+
+		for (var i = 0; i < colorList.length; i++ ) {
+			picker2.append('<li class="color-item" data-hex="' + '#' + colorList[i] + '" style="background-color:' + '#' + colorList[i] + ';"></li>');
+		}
+
+		$('body').click(function () {
+			picker2.fadeOut();
+		});
+
+		$('.call-picker2').click(function(event) {
+			event.stopPropagation();
+			picker2.fadeIn();
+			picker2.children('li').hover(function() {
+				var codeHex = $(this).data('hex');
+
+				$('.color-holder').css('background-color', codeHex);
+				$('#buttons').css('background-color', codeHex);
+
+				$('#pickcolor').val(codeHex);
+				
+			});
+		});
