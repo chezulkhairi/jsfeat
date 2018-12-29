@@ -544,10 +544,10 @@ function render_corners(corners, count, img, step) {
 			picker2.children('li').hover(function() {
 				var codeHex = $(this).data('hex');
 
-				$('.color-holder').css('background-color', codeHex);
+				$('.color-holder2').css('background-color', codeHex);
 				$('#buttons').css('background-color', codeHex);
 
-				$('#pickcolor').val(codeHex);
+				$('#pickcolor2').val(codeHex);
 				
 			});
 		});
