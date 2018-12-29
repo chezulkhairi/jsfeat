@@ -519,7 +519,7 @@ function render_corners(corners, count, img, step) {
 				var codeHex = $(this).data('hex');
 
 				$('.color-holder').css('background-color', codeHex);
-				$('.button-1').style('background-color', codeHex);
+				$('.button-1').css('background-color', codeHex);
 				$('#pickcolor').val(codeHex);
 			});
 		});
