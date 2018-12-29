@@ -520,6 +520,7 @@ function render_corners(corners, count, img, step) {
 
 				$('.color-holder').css('background-color', codeHex);
 				$('.button-1').css('background-color', codeHex);
+				$('#button-2').css('background-color', '#FF6600');
 				$('#pickcolor').val(codeHex);
 			});
 		});
