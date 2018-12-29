@@ -6,7 +6,7 @@ html, body {
   overflow: visible;
   font-family: 'Lato', sans-serif;
   background-color: #111;
-  font-size: 8px;
+  font-size: 7px;
 }
 
 .info {
@@ -38,11 +38,11 @@ a {
 
 
 .container {
-  margin-top: 20px;
+  margin-top: 5px;
 }
 
 .input-group {
-  margin-top:15px;
+  margin-top:5px;
 }
 
 .alert {
