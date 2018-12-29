@@ -1,29 +1,29 @@
 html, body {
   position: absolute;
-  width: 50%;
-  height: 50%;
+  width: 30%;
+  height: 30%;
   margin: 0 0;
   overflow: visible;
   font-family: 'Lato', sans-serif;
   background-color: #111;
-  font-size: 9px;
+  font-size: 8px;
 }
 
 .info {
   position: absolute;
   left: 0;
   bottom: 0;
-  width: 100%;
+  width: 30%;
   padding: 10px 10px;
   box-sizing: border-box;
   background-color: rgba(0, 0, 0, 0.8);
   color: #fff;
-  font-size: 9px;
+  font-size: 8px;
 }
 
 .info-desc {
   color: #ddd;
-  font-size: 9px;
+  font-size: 8px;
 }
 
 a {
@@ -50,5 +50,5 @@ a {
 }
 
 .affix {
-  width: 100%;
+  width: 40%;
 }
