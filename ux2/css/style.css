@@ -58,6 +58,8 @@ a {
 		position: relative;
 		width: 250px;
 		margin: 20px auto;
+		left: 25px;
+    top: 50px;
 	}
 
 	.color-wrapper p {
