@@ -26,7 +26,7 @@ var imgSource;
 var imgCanvas;
 var imgCtx;
 var imgScale = 1;
-var imgOffsetX = -50;
+var imgOffsetX = 1;
 var imgOffsetY = 1;
 var prevConfig = {};
 
@@ -196,7 +196,7 @@ function updateSource() {
         var imageData;
         if(config.useJSFeat) {
             imgCtx.drawImage(img, 0, 0, width, height);
-            imageData = imgCtx.getImageData(px, py, width, height);
+            imageData = imgCtx.getImageData(0, 0, width, height);
             data = imageData.data;
             if(hasDimensionChanged) {
                 imgUint8 = new jsfeat.matrix_t(width, height, jsfeat.U8_t | jsfeat.C1_t);
