@@ -44,6 +44,15 @@ a {
 	
 }
 
+
+.containerheader {
+  padding: 10px;
+  cursor: move;
+  z-index: 1000;
+  background-color: #2196F3;
+  color: #fff;
+}
+
 .input-group {
   margin-top:2px;
 }
