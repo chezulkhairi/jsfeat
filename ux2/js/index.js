@@ -26,7 +26,7 @@ var imgSource;
 var imgCanvas;
 var imgCtx;
 var imgScale = 1;
-var imgOffsetX = 1;
+var imgOffsetX = -50;
 var imgOffsetY = 1;
 var prevConfig = {};
 
