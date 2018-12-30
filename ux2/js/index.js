@@ -3,6 +3,9 @@ var stats;
 var canvas;
 var ctx;
 
+var px;
+var py;
+
 var windowWidth;
 var windowHeight;
 var width;
@@ -178,6 +181,8 @@ function render() {
 
 
 function updateSource() {
+	px=-20;
+	py=0;
     if(img.width) {
         needUpdateSource = false;
         needIndexing = true;
@@ -191,7 +196,7 @@ function updateSource() {
         var imageData;
         if(config.useJSFeat) {
             imgCtx.drawImage(img, 0, 0, width, height);
-            imageData = imgCtx.getImageData(0, 0, width, height);
+            imageData = imgCtx.getImageData(px, py, width, height);
             data = imageData.data;
             if(hasDimensionChanged) {
                 imgUint8 = new jsfeat.matrix_t(width, height, jsfeat.U8_t | jsfeat.C1_t);
